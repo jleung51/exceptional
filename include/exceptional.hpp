@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <fstream>
 #include <iostream>
 #include <exception>
 #include <stdexcept>
@@ -28,7 +29,8 @@ class Logger
     ~Logger();
 
   private:
-    const std::string log_filename = "log.txt";
+    const std::string log_filename_ = "log.txt";
+    std::ofstream log_stream_;
 
     // This method logs a thrown value as a warning.
     template <class T>
