@@ -14,4 +14,16 @@
 
 namespace exceptional
 {
-}
+  // Constructor
+  Logger::Logger()
+  {
+    log_stream_.open( log_filename_ );
+  }
+
+  // Destructor
+  Logger::~Logger()
+  {
+    log_stream_.close();
+  }
+
+}  // End of namespace exceptional
