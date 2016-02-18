@@ -28,17 +28,17 @@ class Logger
     // Destructor
     ~Logger();
 
-  private:
-    const std::string log_filename_ = "log.txt";
-    std::ofstream log_stream_;
-
-    // This method logs a thrown value as a warning.
+    // This public method logs a thrown value as a warning.
     template <class T>
     void LogWarning( const T& except );
 
-    // This method logs a thrown value as an error.
+    // This public method logs a thrown value as an error.
     template <class T>
     void LogError( const T& except );
+
+  private:
+    const std::string log_filename_ = "log.txt";
+    std::ofstream log_stream_;
 
 };
 
