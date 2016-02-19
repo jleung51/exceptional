@@ -71,8 +71,7 @@ namespace exceptional
   {
     time_t raw_time;
     time( &raw_time );
-    tm* time_info = localtime( &raw_time );
-    return asctime( time_info );
+    return asctime( localtime(&raw_time) );
   }
 
   // This private method logs the time of a thrown exception.
