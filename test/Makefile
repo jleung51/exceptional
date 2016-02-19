@@ -43,9 +43,10 @@ tests: exceptional.o test.cpp
 	$(GCC) $(GCC-LFLAGS) exceptional.o test.cpp -o $(OUTPUT)
 	# To execute the program, run: ./$(OUTPUT)
 
-# $ make <custom>
-<custom>: <source_files>
-	<command>
+# $ make tests-clang
+tests-clang: ../src/exceptional.cpp test.cpp
+	$(CLANG) ../src/exceptional.cpp test.cpp -o $(OUTPUT)
+	# To execute the program, run: ./$(OUTPUT)
 
 # $ make clean
 # Removes created files
