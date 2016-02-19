@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <ctime>
 #include <exception>
 #include <fstream>
 #include <iostream>
@@ -52,6 +53,9 @@ class Logger
 
     // This private method logs the severity level of the exception.
     void LogSeverityLevel( SeverityLevel sl );
+
+    // This private method logs the time of a thrown exception.
+    void LogTime();
 
     // This private method logs the type of a thrown exception.
     template <class T>

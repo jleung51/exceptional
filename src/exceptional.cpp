@@ -56,6 +56,18 @@ namespace exceptional
       << std::endl;
   }
 
+  // This private method logs the time of a thrown exception.
+  void Logger::LogTime()
+  {
+    time_t raw_time;
+    time( &raw_time );
+    tm* time_info = localtime( &raw_time );
+
+    log_stream_
+      << "Logged at: "
+      << asctime( time_info );
+  }
+
   // This private method logs the message of an exception from std.
   void Logger::LogExceptionMessage( const std::exception& except )
   {
