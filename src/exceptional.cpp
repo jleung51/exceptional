@@ -9,6 +9,7 @@
  */
 
 #include <iostream>
+#include <string>
 
 #include "../include/exceptional.hpp"
 
@@ -25,5 +26,35 @@ namespace exceptional
   {
     log_stream_.close();
   }
+
+  // This private method logs the severity level of the exception.
+  void Logger::LogSeverityLevel( SeverityLevel sl )
+  {
+    std::string output;
+    switch( sl )
+    {
+      case SeverityLevel::kWarning:
+        output = "Warning";
+        break;
+      case SeverityLevel::kError:
+        output = "Error";
+        break;
+    }
+
+    log_stream_
+      << output
+      << " caught."
+      << std::endl;
+  }
+
+  // This private method logs the message of an exception from std.
+  void Logger::LogExceptionMessage( const std::exception& except )
+  {
+    log_stream_
+      << "Exception message: "
+      << except.what()
+      << std::endl;
+  }
+
 
 }  // End of namespace exceptional
