@@ -1,7 +1,7 @@
 /*
  *
  * Author: Jeffrey Leung
- * Last edited: 2016-02-18
+ * Last edited: 2016-02-19
  *
  * This C++ file contains the function implemenations for the
  * exception logger Exceptional.
@@ -27,6 +27,7 @@ namespace exceptional
       << std::endl
       << "LOG CREATED AT "
       << GetTime()
+      << std::endl
       << std::endl;
   }
 
@@ -71,7 +72,10 @@ namespace exceptional
   {
     time_t raw_time;
     time( &raw_time );
-    return asctime( localtime(&raw_time) );
+
+    char buffer[ sizeof("1970-01-01T00:00:00") ];
+    strftime(buffer, sizeof(buffer), "%Y-%m-%dT%H:%M:%S", localtime(&raw_time));
+    return buffer;
   }
 
   // This private method logs the time of a thrown exception.
@@ -79,7 +83,8 @@ namespace exceptional
   {
     log_stream_
       << "Logged at: "
-      << GetTime();
+      << GetTime()
+      << std::endl;
   }
 
   // This private method logs the message of an exception from std.
