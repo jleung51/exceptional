@@ -50,4 +50,4 @@ tests: exceptional.o test.cpp
 # $ make clean
 # Removes created files
 clean:
-	rm -f $(OUTPUT) *.o *~
+	rm -f $(OUTPUT) *.o *~ log.txt
