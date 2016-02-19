@@ -66,6 +66,16 @@ class Logger
 
 };
 
+// This public method logs a thrown value as a warning.
+template <class T>
+void Logger::LogWarning( const T& except )
+{
+  LogSeverityLevel( SeverityLevel::kWarning );
+  LogExceptionType( except );
+  LogExceptionValue( except );
+  log_stream_ << std::endl;
+}
+
 // This private method logs the type of a thrown exception.
 template <class T>
 void Logger::LogExceptionType( const T& except )

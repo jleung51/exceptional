@@ -27,6 +27,15 @@ namespace exceptional
     log_stream_.close();
   }
 
+  // This public method logs a thrown std::exception as a warning.
+  void Logger::LogWarning( const std::exception& except )
+  {
+    LogSeverityLevel( SeverityLevel::kWarning );
+    LogExceptionType( except );
+    LogExceptionMessage( except );
+    log_stream_ << std::endl;
+  }
+
   // This private method logs the severity level of the exception.
   void Logger::LogSeverityLevel( SeverityLevel sl )
   {
@@ -55,6 +64,5 @@ namespace exceptional
       << except.what()
       << std::endl;
   }
-
 
 }  // End of namespace exceptional
