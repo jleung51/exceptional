@@ -18,7 +18,20 @@ namespace exceptional
   // Constructor
   Logger::Logger()
   {
-    log_stream_.open( log_filename_ );
+    time_t raw_time;
+    time( &raw_time );
+    tm* time_info = localtime( &raw_time );
+
+    // Opens the file in append mode
+    log_stream_.open( log_filename_, std::ios::app );
+
+    log_stream_
+      << "________________________________________"
+      << std::endl
+      << std::endl
+      << "LOG CREATED AT "
+      << asctime( time_info )
+      << std::endl;
   }
 
   // Destructor
