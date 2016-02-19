@@ -75,6 +75,7 @@ template <class T>
 void Logger::LogWarning( const T& except )
 {
   LogSeverityLevel( SeverityLevel::kWarning );
+  LogTime();
   LogExceptionType( except );
   LogExceptionValue( except );
   log_stream_ << std::endl;

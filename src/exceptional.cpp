@@ -31,6 +31,7 @@ namespace exceptional
   void Logger::LogWarning( const std::exception& except )
   {
     LogSeverityLevel( SeverityLevel::kWarning );
+    LogTime();
     LogExceptionType( except );
     LogExceptionMessage( except );
     log_stream_ << std::endl;
