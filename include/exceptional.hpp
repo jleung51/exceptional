@@ -10,11 +10,12 @@
 
 #pragma once
 
+#include <exception>
 #include <fstream>
 #include <iostream>
-#include <exception>
 #include <stdexcept>
 #include <string>
+#include <typeinfo>
 
 namespace exceptional
 {
@@ -64,5 +65,25 @@ class Logger
     void LogExceptionMessage( const std::exception& except );
 
 };
+
+// This private method logs the type of a thrown exception.
+template <class T>
+void Logger::LogExceptionType( const T& except )
+{
+  log_stream_
+    << "Type of exception value: "
+    << typeid(except).name()
+    << std::endl;
+}
+
+// This private method logs the type of a thrown exception.
+template <class T>
+void Logger::LogExceptionValue( const T& except )
+{
+  log_stream_
+    << "Exception value: "
+    << except
+    << std::endl;
+}
 
 }  // End of namespace exceptional
