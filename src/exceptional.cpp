@@ -92,8 +92,14 @@ namespace exceptional
   {
     log_stream_
       << "Exception message: "
-      << except.what()
-      << std::endl;
+      << except.what();
+
+    std::string s = except.what();
+    if( s[s.length()-1] != '\n' )
+    {
+      log_stream_
+        << std::endl;
+    }
   }
 
 }  // End of namespace exceptional
