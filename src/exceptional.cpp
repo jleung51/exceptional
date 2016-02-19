@@ -70,6 +70,15 @@ namespace exceptional
       << std::endl;
   }
 
+  // This private method returns the current time as a string.
+  std::string Logger::GetTime()
+  {
+    time_t raw_time;
+    time( &raw_time );
+    tm* time_info = localtime( &raw_time );
+    return asctime( time_info );
+  }
+
   // This private method logs the time of a thrown exception.
   void Logger::LogTime()
   {
