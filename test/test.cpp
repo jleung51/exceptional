@@ -18,8 +18,14 @@ exceptional::Logger log;
 namespace
 {
 
-// This function throws an std::out_of_range error.
-void out_of_range()
+// This function throws an std::out_of_range error with a newline at the end.
+void out_of_range_newline()
+{
+  throw std::out_of_range("Exception message for std::out_of_range.\n");
+}
+
+// This function throws an std::out_of_range error without a newline.
+void out_of_range_no_newline()
 {
   throw std::out_of_range("Exception message for std::out_of_range.");
 }
@@ -36,7 +42,16 @@ int main()
 
   try
   {
-    out_of_range();
+    out_of_range_newline();
+  }
+  catch( const std::exception& e )
+  {
+    log.LogWarning(e);
+  }
+
+  try
+  {
+    out_of_range_no_newline();
   }
   catch( const std::exception& e )
   {
