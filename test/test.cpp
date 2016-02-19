@@ -43,5 +43,6 @@ int main()
     log.LogWarning(e);
   }
 
+  std::cout << "Test output written to log.txt." << std::endl;
   return 0;
 }
