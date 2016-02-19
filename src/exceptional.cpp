@@ -18,10 +18,6 @@ namespace exceptional
   // Constructor
   Logger::Logger()
   {
-    time_t raw_time;
-    time( &raw_time );
-    tm* time_info = localtime( &raw_time );
-
     // Opens the file in append mode
     log_stream_.open( log_filename_, std::ios::app );
 
@@ -30,7 +26,7 @@ namespace exceptional
       << std::endl
       << std::endl
       << "LOG CREATED AT "
-      << asctime( time_info )
+      << GetTime()
       << std::endl;
   }
 
@@ -82,13 +78,9 @@ namespace exceptional
   // This private method logs the time of a thrown exception.
   void Logger::LogTime()
   {
-    time_t raw_time;
-    time( &raw_time );
-    tm* time_info = localtime( &raw_time );
-
     log_stream_
       << "Logged at: "
-      << asctime( time_info );
+      << GetTime();
   }
 
   // This private method logs the message of an exception from std.
