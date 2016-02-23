@@ -1,7 +1,7 @@
 /*
  *
  * Author: Jeffrey Leung
- * Last edited: 2016-02-19
+ * Last edited: 2016-02-22
  *
  * This C++ file contains the function implemenations for the
  * exception logger Exceptional.
@@ -54,16 +54,15 @@ namespace exceptional
     switch( sl )
     {
       case SeverityLevel::kWarning:
-        output = "Warning";
+        output = "Warning:";
         break;
       case SeverityLevel::kError:
-        output = "Error";
+        output = "Error:";
         break;
     }
 
     log_stream_
       << output
-      << " caught."
       << std::endl;
   }
 
