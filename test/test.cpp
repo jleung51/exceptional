@@ -51,11 +51,29 @@ int main()
 
   try
   {
+    out_of_range_newline();
+  }
+  catch( const std::exception& e )
+  {
+    log.LogError(e);
+  }
+
+  try
+  {
     out_of_range_no_newline();
   }
   catch( const std::exception& e )
   {
     log.LogWarning(e);
+  }
+
+  try
+  {
+    out_of_range_no_newline();
+  }
+  catch( const std::exception& e )
+  {
+    log.LogError(e);
   }
 
   std::cout << "Test output written to log.txt." << std::endl;
