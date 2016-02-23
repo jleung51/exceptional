@@ -36,9 +36,11 @@ int main()
 {
   int i = 948;
   log.LogWarning(i);
+  log.LogError(i);
 
   std::string s = "Example string here.";
   log.LogWarning(s);
+  log.LogError(i);
 
   try
   {
