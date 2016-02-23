@@ -39,11 +39,11 @@ class Logger
 
     // This public method logs a thrown std::exception as an error.
     void LogError( const std::exception& except );
-/*
+
     // This public method logs a thrown value as an error.
     template <class T>
     void LogError( const T& except );
-*/
+
   private:
     const std::string log_filename_ = "log.txt";
     std::ofstream log_stream_;
@@ -81,6 +81,17 @@ template <class T>
 void Logger::LogWarning( const T& except )
 {
   LogSeverityLevel( SeverityLevel::kWarning );
+  LogTime();
+  LogExceptionType( except );
+  LogExceptionValue( except );
+  log_stream_ << std::endl;
+}
+
+// This public method logs a thrown value as an error.
+template <class T>
+void Logger::LogError( const T& except )
+{
+  LogSeverityLevel( SeverityLevel::kError );
   LogTime();
   LogExceptionType( except );
   LogExceptionValue( except );
