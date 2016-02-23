@@ -47,6 +47,16 @@ namespace exceptional
     log_stream_ << std::endl;
   }
 
+  // This public method logs a thrown std::exception as an error.
+  void Logger::LogError( const std::exception& except )
+  {
+    LogSeverityLevel( SeverityLevel::kError );
+    LogTime();
+    LogExceptionType( except );
+    LogExceptionMessage( except );
+    log_stream_ << std::endl;
+  }
+
   // This private method logs the severity level of the exception.
   void Logger::LogSeverityLevel( SeverityLevel sl )
   {
