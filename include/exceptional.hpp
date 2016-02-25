@@ -1,10 +1,11 @@
 /*
  *
  * Author: Jeffrey Leung
- * Last edited: 2016-02-18
+ * Last edited: 2016-02-25
  *
  * This C++ header file contains the function prototypes for the
- * exception logger Exceptional.
+ * exception logger Exceptional, as well as definitions for all
+ * templated methods.
  *
  */
 
