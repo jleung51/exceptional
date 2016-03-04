@@ -1,7 +1,7 @@
 /*
  *
  * Author: Jeffrey Leung
- * Last edited: 2016-02-18
+ * Last edited: 2016-03-04
  *
  * This C++ file tests the functions of the exception logger Exceptional.
  *
@@ -13,7 +13,7 @@
 
 #include "../include/exceptional.hpp"
 
-exceptional::Logger log;
+exceptional::Logger log_file;
 
 namespace
 {
@@ -34,13 +34,15 @@ void out_of_range_no_newline()
 
 int main()
 {
+  std::cout << "Testing output to log.txt:" << std::endl;
+
   int i = 948;
-  log.LogWarning(i);
-  log.LogError(i);
+  log_file.LogWarning(i);
+  log_file.LogError(i);
 
   std::string s = "Example string here.";
-  log.LogWarning(s);
-  log.LogError(i);
+  log_file.LogWarning(s);
+  log_file.LogError(i);
 
   try
   {
@@ -48,7 +50,7 @@ int main()
   }
   catch( const std::exception& e )
   {
-    log.LogWarning(e);
+    log_file.LogWarning(e);
   }
 
   try
@@ -57,7 +59,7 @@ int main()
   }
   catch( const std::exception& e )
   {
-    log.LogError(e);
+    log_file.LogError(e);
   }
 
   try
@@ -66,7 +68,7 @@ int main()
   }
   catch( const std::exception& e )
   {
-    log.LogWarning(e);
+    log_file.LogWarning(e);
   }
 
   try
@@ -75,9 +77,16 @@ int main()
   }
   catch( const std::exception& e )
   {
-    log.LogError(e);
+    log_file.LogError(e);
   }
 
-  std::cout << "Test output written to log.txt." << std::endl;
+  std::cout << "Completed." << std::endl << std::endl;
+
+  std::cout << std::endl;
+
+  std::cout << "Testing output to cout:" << std::endl;
+  exceptional::Logger log_cout(std::cout);
+  log_cout.LogWarning(948);
+
   return 0;
 }
