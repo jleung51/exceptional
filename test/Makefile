@@ -28,7 +28,8 @@ OUTPUT = tests
 # $ 'make' or 'make help'
 help:
 	# INSTRUCTIONS:
-	#   To test exceptional, run: make tests
+	#   To test exceptional with g++, run: make tests
+	#   To test exceptional with clang, run: make tests-clang
 	#   To remove compiled output files, run: make clean
 
 # Executed whenever an object file is out of date
@@ -44,7 +45,7 @@ tests: exceptional.o test.cpp
 	# To execute the program, run: ./$(OUTPUT)
 
 # $ make tests-clang
-tests-clang: ../src/exceptional.cpp test.cpp
+tests-clang: $(HEADERS) ../src/exceptional.cpp test.cpp
 	$(CLANG) ../src/exceptional.cpp test.cpp -o $(OUTPUT)
 	# To execute the program, run: ./$(OUTPUT)
 
