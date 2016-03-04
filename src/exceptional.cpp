@@ -1,7 +1,7 @@
 /*
  *
  * Author: Jeffrey Leung
- * Last edited: 2016-02-22
+ * Last edited: 2016-03-04
  *
  * This C++ file contains the function implemenations for the
  * exception logger Exceptional.
@@ -34,12 +34,22 @@ namespace exceptional
   // Destructor
   Logger::~Logger()
   {
+    log_stream_
+      << "Warnings logged: "
+      << warning_count_
+      << std::endl
+      << "Errors logged:   "
+      << error_count_
+      << std::endl
+      << std::endl;
+
     log_stream_.close();
   }
 
   // This public method logs a thrown std::exception as a warning.
   void Logger::LogWarning( const std::exception& except )
   {
+    ++warning_count_;
     LogSeverityLevel( SeverityLevel::kWarning );
     LogTime();
     LogExceptionType( except );
@@ -50,6 +60,7 @@ namespace exceptional
   // This public method logs a thrown std::exception as an error.
   void Logger::LogError( const std::exception& except )
   {
+    ++error_count_;
     LogSeverityLevel( SeverityLevel::kError );
     LogTime();
     LogExceptionType( except );

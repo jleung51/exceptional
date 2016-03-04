@@ -1,7 +1,7 @@
 /*
  *
  * Author: Jeffrey Leung
- * Last edited: 2016-02-25
+ * Last edited: 2016-03-04
  *
  * This C++ header file contains the function prototypes for the
  * exception logger Exceptional, as well as definitions for all
@@ -48,6 +48,8 @@ class Logger
   private:
     const std::string log_filename_ = "log.txt";
     std::ofstream log_stream_;
+    size_t warning_count_ = 0;
+    size_t error_count_ = 0;
 
     enum class SeverityLevel
     {
@@ -81,6 +83,7 @@ class Logger
 template <class T>
 void Logger::LogWarning( const T& except )
 {
+  ++warning_count_;
   LogSeverityLevel( SeverityLevel::kWarning );
   LogTime();
   LogExceptionType( except );
@@ -92,6 +95,7 @@ void Logger::LogWarning( const T& except )
 template <class T>
 void Logger::LogError( const T& except )
 {
+  ++error_count_;
   LogSeverityLevel( SeverityLevel::kError );
   LogTime();
   LogExceptionType( except );
