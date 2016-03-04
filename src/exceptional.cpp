@@ -37,12 +37,29 @@ std::string GetTime()
 namespace exceptional
 {
 
-// Constructor
-Logger::Logger()
+// Default constructor
+Logger::Logger() :
+  log_stream_default_file_{},
+  log_stream_{log_stream_default_file_}
 {
   // Opens the file in append mode
-  log_stream_.open( log_filename_, std::ios::app );
+  // Executed on the ofstream object, not the ostream object
+  log_stream_default_file_.open( log_filename_, std::ios::app );
 
+  log_stream_
+    << "________________________________________"
+    << std::endl
+    << std::endl
+    << "LOG CREATED AT "
+    << GetTime()
+    << std::endl
+    << std::endl;
+}
+
+// Parameterized constructor
+Logger::Logger( std::ostream& os ) :
+  log_stream_{os}
+{
   log_stream_
     << "________________________________________"
     << std::endl
@@ -65,7 +82,8 @@ Logger::~Logger()
     << std::endl
     << std::endl;
 
-  log_stream_.close();
+  // Executed on the ofstream object, not the ostream object
+  log_stream_default_file_.close();
 }
 
 // This public method logs a thrown std::exception as a warning.

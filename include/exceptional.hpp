@@ -25,8 +25,11 @@ namespace exceptional
 class Logger
 {
   public:
-    // Constructor
+    // Default constructor
     Logger();
+
+    // Parameterized constructor
+    Logger( std::ostream& os );
 
     // Destructor
     ~Logger();
@@ -47,7 +50,9 @@ class Logger
 
   private:
     const std::string log_filename_ = "log.txt";
-    std::ofstream log_stream_;
+    std::ofstream log_stream_default_file_;
+    std::ostream& log_stream_;
+
     size_t warning_count_ = 0;
     size_t error_count_ = 0;
 
