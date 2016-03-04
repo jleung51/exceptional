@@ -60,9 +60,6 @@ class Logger
     // This private method logs the severity level of the exception.
     void LogSeverityLevel( SeverityLevel sl );
 
-    // This function returns the current time as a string.
-    std::string GetTime();
-
     // This private method logs the time of a thrown exception.
     void LogTime();
 

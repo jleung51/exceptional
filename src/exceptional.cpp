@@ -13,6 +13,27 @@
 
 #include "../include/exceptional.hpp"
 
+namespace
+{
+
+// This local function returns the current time as a string, formatted in
+// the ISO 8601 standard.
+std::string GetTime();
+
+// This local function returns the current time as a string, formatted in
+// the ISO 8601 standard.
+std::string GetTime()
+{
+  time_t raw_time;
+  time( &raw_time );
+
+  char buffer[ sizeof("1970-01-01T00:00:00") ];
+  strftime(buffer, sizeof(buffer), "%Y-%m-%dT%H:%M:%S", localtime(&raw_time));
+  return buffer;
+}
+
+}  // End of unnamed namespace (for local functions)
+
 namespace exceptional
 {
   // Constructor
@@ -85,17 +106,6 @@ namespace exceptional
     log_stream_
       << output
       << std::endl;
-  }
-
-  // This private method returns the current time as a string.
-  std::string Logger::GetTime()
-  {
-    time_t raw_time;
-    time( &raw_time );
-
-    char buffer[ sizeof("1970-01-01T00:00:00") ];
-    strftime(buffer, sizeof(buffer), "%Y-%m-%dT%H:%M:%S", localtime(&raw_time));
-    return buffer;
   }
 
   // This private method logs the time of a thrown exception.
