@@ -27,10 +27,10 @@ OUTPUT = tests
 
 # $ 'make' or 'make help'
 help:
-	# INSTRUCTIONS:
-	#   To test exceptional with g++, run: make tests
-	#   To test exceptional with clang, run: make tests-clang
-	#   To remove compiled output files, run: make clean
+	@echo "INSTRUCTIONS:"
+	@echo "  To test exceptional with g++, run: make tests"
+	@echo "  To test exceptional with clang, run: make tests-clang"
+	@echo "  To remove compiled output files, run: make clean"
 
 # Executed whenever an object file is out of date
 # Symbols:
@@ -42,12 +42,12 @@ help:
 # $ make tests
 tests: exceptional.o test.cpp
 	$(GCC) $(GCC-LFLAGS) exceptional.o test.cpp -o $(OUTPUT)
-	# To execute the program, run: ./$(OUTPUT)
+	@echo "To execute the program, run: ./$(OUTPUT)"
 
 # $ make tests-clang
 tests-clang: $(HEADERS) ../src/exceptional.cpp test.cpp
 	$(CLANG) ../src/exceptional.cpp test.cpp -o $(OUTPUT)
-	# To execute the program, run: ./$(OUTPUT)
+	@echo "To execute the program, run: ./$(OUTPUT)"
 
 # $ make clean
 # Removes created files
