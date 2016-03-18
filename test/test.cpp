@@ -17,12 +17,12 @@ exceptional::Logger log_file;
 
 namespace
 {
-
+/*
 // This function throws an std::out_of_range error with a newline at the end.
 void out_of_range_newline()
 {
   throw std::out_of_range("Exception message for std::out_of_range.\n");
-}
+}*/
 
 // This function throws an std::out_of_range error without a newline.
 void out_of_range_no_newline()
@@ -33,7 +33,7 @@ void out_of_range_no_newline()
 }  // End of unnamed namespace (for local functions)
 
 int main()
-{
+{/*
   std::cout << "Testing output to log.txt:" << std::endl;
 
   int i = 948;
@@ -61,7 +61,7 @@ int main()
   {
     log_file.LogError(e);
   }
-
+*/
   try
   {
     out_of_range_no_newline();
