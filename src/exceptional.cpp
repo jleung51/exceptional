@@ -1,7 +1,7 @@
 /*
  *
  * Author: Jeffrey Leung
- * Last edited: 2016-03-04
+ * Last edited: 2016-03-17
  *
  * This C++ file contains the function implemenations for the
  * exception logger Exceptional.
@@ -10,6 +10,11 @@
 
 #include <iostream>
 #include <string>
+
+// For type demangling when using g++
+#ifdef __GNUG__
+#include <cxxabi.h>
+#endif
 
 #include "../include/exceptional.hpp"
 
@@ -135,6 +140,47 @@ void Logger::LogTime()
     << GetTime()
     << std::endl;
 }
+
+#ifdef __GNUG__  // Using g++
+
+// This private method demangles the type of a thrown exception
+// if g++ is used.
+// An exception is thrown if:
+//   type_name is null (invalid_argument)
+std::string Logger::DemangleType( const char* type_name )
+{
+  if( type_name == nullptr )
+  {
+    throw std::invalid_argument("Error: DemangleType() was given an invalid "\
+      "(null) pointer.\n");
+  }
+
+  int status = -1;
+  char* type_name_demangled =
+    abi::__cxa_demangle( type_name, NULL, NULL, &status );
+
+  if( status == 0 )
+  {
+    std::string demangled_string( type_name_demangled );
+    free( type_name_demangled );
+    return demangled_string;
+  }
+  else
+  {
+    return type_name;
+  }
+}
+
+#else
+
+// This private method demangles the type of a thrown exception
+// if g++ is used.
+std::string Logger::DemangleType( const char* type_name )
+{
+  return type_name;
+}
+
+#endif
 
 // This private method logs the message of an exception from std.
 void Logger::LogExceptionMessage( const std::exception& except )

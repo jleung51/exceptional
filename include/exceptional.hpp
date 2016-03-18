@@ -1,7 +1,7 @@
 /*
  *
  * Author: Jeffrey Leung
- * Last edited: 2016-03-04
+ * Last edited: 2016-03-17
  *
  * This C++ header file contains the function prototypes for the
  * exception logger Exceptional, as well as definitions for all
@@ -72,13 +72,18 @@ class Logger
     template <class T>
     void LogExceptionType( const T& except );
 
+    // This private method demangles the type of a thrown exception
+    // if g++ is used.
+    // An exception is thrown if:
+    //   type_name is null (invalid_argument)
+    std::string DemangleType( const char* type_name );
+
     // This private method logs the value of a thrown exception.
     template <class T>
     void LogExceptionValue( const T& except );
 
     // This private method logs the message of an exception from std.
     void LogExceptionMessage( const std::exception& except );
-
 };
 
 // This public method logs a thrown value as a warning.
@@ -109,10 +114,26 @@ void Logger::LogError( const T& except )
 template <class T>
 void Logger::LogExceptionType( const T& except )
 {
-  log_stream_
-    << "Type of exception value: "
-    << typeid(except).name()
-    << std::endl;
+  const char* type_name = typeid(except).name();
+  if(type_name == nullptr)
+  {
+    log_stream_
+      << "Type of exception value could not be detected."
+      << std::endl;
+  }
+  else
+  {
+    try
+    {
+      log_stream_
+        << "Type of exception value: "
+        << DemangleType(type_name)
+        << std::endl;
+    }
+    catch(...)
+    {
+    }
+  }
 }
 
 // This private method logs the type of a thrown exception.
