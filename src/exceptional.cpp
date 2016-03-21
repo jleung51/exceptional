@@ -49,7 +49,7 @@ Logger::Logger() :
 {
   // Opens the file in append mode
   // Executed on the ofstream object, not the ostream object
-  log_stream_default_file_.open( log_filename_, std::ios::app );
+  log_stream_default_file_.open( log_filename_default_, std::ios::app );
 
   log_stream_
     << "________________________________________"
@@ -61,7 +61,26 @@ Logger::Logger() :
     << std::endl;
 }
 
-// Parameterized constructor
+// Parameterized constructor (string filename)
+Logger::Logger( const std::string filename ) :
+  log_stream_default_file_{},
+  log_stream_{log_stream_default_file_}
+{
+  // Opens the file in append mode
+  // Executed on the ofstream object, not the ostream object
+  log_stream_default_file_.open( filename, std::ios::app );
+
+  log_stream_
+    << "________________________________________"
+    << std::endl
+    << std::endl
+    << "LOG CREATED AT "
+    << GetTime()
+    << std::endl
+    << std::endl;
+}
+
+// Parameterized constructor (output stream)
 Logger::Logger( std::ostream& os ) :
   log_stream_{os}
 {

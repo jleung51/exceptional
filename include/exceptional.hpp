@@ -28,7 +28,10 @@ class Logger
     // Default constructor
     Logger();
 
-    // Parameterized constructor
+    // Parameterized constructor (string filename)
+    Logger( const std::string filename );
+
+    // Parameterized constructor (output stream)
     Logger( std::ostream& os );
 
     // Destructor
@@ -49,7 +52,7 @@ class Logger
     void LogError( const T& except );
 
   private:
-    const std::string log_filename_ = "captains.log";
+    const std::string log_filename_default_  = "captains.log";
     std::ofstream log_stream_default_file_;
     std::ostream& log_stream_;
 
