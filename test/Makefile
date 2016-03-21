@@ -52,4 +52,4 @@ tests-clang: $(HEADERS) ../src/exceptional.cpp test.cpp
 # $ make clean
 # Removes created files
 clean:
-	rm -f $(OUTPUT) *.o *~ log.txt
+	rm -f $(OUTPUT) *.o *~ captains.log

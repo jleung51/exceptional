@@ -1,7 +1,7 @@
 /*
  *
  * Author: Jeffrey Leung
- * Last edited: 2016-03-04
+ * Last edited: 2016-03-21
  *
  * This C++ file tests the functions of the exception logger Exceptional.
  *
@@ -34,7 +34,7 @@ void out_of_range_no_newline()
 
 int main()
 {
-  std::cout << "Testing output to log.txt:" << std::endl;
+  std::cout << "Testing output to captains.log:" << std::endl;
 
   int i = 948;
   log_file.LogWarning(i);

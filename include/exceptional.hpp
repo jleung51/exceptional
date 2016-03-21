@@ -1,7 +1,7 @@
 /*
  *
  * Author: Jeffrey Leung
- * Last edited: 2016-03-17
+ * Last edited: 2016-03-21
  *
  * This C++ header file contains the function prototypes for the
  * exception logger Exceptional, as well as definitions for all
@@ -49,7 +49,7 @@ class Logger
     void LogError( const T& except );
 
   private:
-    const std::string log_filename_ = "log.txt";
+    const std::string log_filename_ = "captains.log";
     std::ofstream log_stream_default_file_;
     std::ostream& log_stream_;
 
