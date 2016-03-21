@@ -82,6 +82,16 @@ int main()
 
   std::cout << "Completed." << std::endl << std::endl;
 
+
+  std::cout << std::endl;
+  std::cout << "Testing output to example_file.log:" << std::endl;
+
+  exceptional::Logger log_example_file("example_file.log");
+  log_example_file.LogWarning(948);
+
+  std::cout << "Completed." << std::endl << std::endl;
+
+
   std::cout << std::endl;
 
   std::cout << "Testing output to cout:" << std::endl;
