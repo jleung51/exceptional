@@ -13,8 +13,6 @@
 
 #include "../include/exceptional.hpp"
 
-exceptional::Logger log_file;
-
 namespace
 {
 
@@ -37,12 +35,12 @@ int main()
   std::cout << "Testing output to captains.log:" << std::endl;
   {
     int i = 948;
-    log_file.LogWarning(i);
-    log_file.LogError(i);
+    exceptional::logger_default_file.LogWarning(i);
+    exceptional::logger_default_file.LogError(i);
 
     std::string s = "Example string here.";
-    log_file.LogWarning(s);
-    log_file.LogError(i);
+    exceptional::logger_default_file.LogWarning(s);
+    exceptional::logger_default_file.LogError(i);
 
     try
     {
@@ -50,7 +48,7 @@ int main()
     }
     catch( const std::exception& e )
     {
-      log_file.LogWarning(e);
+      exceptional::logger_default_file.LogWarning(e);
     }
 
     try
@@ -59,7 +57,7 @@ int main()
     }
     catch( const std::exception& e )
     {
-      log_file.LogError(e);
+      exceptional::logger_default_file.LogError(e);
     }
 
     try
@@ -68,7 +66,7 @@ int main()
     }
     catch( const std::exception& e )
     {
-      log_file.LogWarning(e);
+      exceptional::logger_default_file.LogWarning(e);
     }
 
     try
@@ -77,25 +75,19 @@ int main()
     }
     catch( const std::exception& e )
     {
-      log_file.LogError(e);
+      exceptional::logger_default_file.LogError(e);
     }
   }
   std::cout << "Completed." << std::endl << std::endl;
 
   std::cout << std::endl;
   std::cout << "Testing output to example_file.log:" << std::endl;
-  {
-    exceptional::Logger log_example_file("example_file.log");
-    log_example_file.LogWarning(948);
-  }
+  exceptional::logger_example_file.LogWarning(948);
   std::cout << "Completed." << std::endl << std::endl;
 
   std::cout << std::endl;
   std::cout << "Testing output to cout:" << std::endl;
-  {
-    exceptional::Logger log_cout(std::cout);
-    log_cout.LogWarning(948);
-  }
+  exceptional::logger_cout.LogWarning(948);
   std::cout << "Completed." << std::endl << std::endl;
 
   return 0;

@@ -40,13 +40,13 @@ help:
 	$(GCC) $(GCC-CFLAGS) $<
 
 # $ make tests
-tests: exceptional.o test.cpp
-	$(GCC) $(GCC-LFLAGS) exceptional.o test.cpp -o $(OUTPUT)
+tests: test.cpp
+	$(GCC) $(GCC-LFLAGS) test.cpp -o $(OUTPUT)
 	@echo "To execute the program, run: ./$(OUTPUT)"
 
 # $ make tests-clang
-tests-clang: $(HEADERS) ../src/exceptional.cpp test.cpp
-	$(CLANG) ../src/exceptional.cpp test.cpp -o $(OUTPUT)
+tests-clang: $(HEADERS) test.cpp
+	$(CLANG) test.cpp -o $(OUTPUT)
 	@echo "To execute the program, run: ./$(OUTPUT)"
 
 # $ make clean
