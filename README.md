@@ -20,3 +20,10 @@ C++ lightweight exception logger.
 
     Warnings logged: 1
     Errors logged:   1
+
+## Instructions for Use
+
+1. #include _exceptional.hpp_ into the files which require logging
+2. Edit the exception logger class(es) declared at the end of _exceptional.hpp_ to your preferred usage
+3. Call exceptional::*logger\_name*.LogWarning(value) or exceptional::*logger\_name*.LogError(value) with a thrown exception value  
+(from any file with _exceptional.hpp_ included)
