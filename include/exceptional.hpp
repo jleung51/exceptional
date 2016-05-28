@@ -18,6 +18,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <vector>
 
 // For type demangling when using g++
 #ifdef __GNUG__
@@ -84,6 +85,8 @@ class Logger
     size_t warning_count_ = 0;
     size_t error_count_ = 0;
 
+    static constexpr size_t kStackBacktraceLevel = 10;
+
     enum class SeverityLevel
     {
       kWarning,
@@ -112,6 +115,11 @@ class Logger
 
     // This private method logs the message of an exception from std.
     void LogExceptionMessage( const std::exception& except );
+
+    // This private method backtraces and logs the call stack.
+    // An exception is thrown if:
+    //   backtrace_symbols returns an invalid set of function names (runtime_error)
+    std::vector<std::string> GetStackBacktrace();
 };
 
 // Default constructor
@@ -347,6 +355,15 @@ void Logger::LogExceptionMessage( const std::exception& except )
     log_stream_
       << std::endl;
   }
+}
+
+// This private method backtraces and logs the call stack.
+// An exception is thrown if:
+//   backtrace_symbols returns an invalid set of function names (runtime_error)
+std::vector<std::string> Logger::GetStackBacktrace()
+{
+  throw std::logic_error("Error: GetStackBacktrace() has not yet "\
+    "been implemented!\n");
 }
 
 }  // End of unnamed namespace (local to the file)
