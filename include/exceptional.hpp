@@ -204,6 +204,7 @@ void Logger::LogWarning( const std::exception& except )
   LogTime();
   LogExceptionType( except );
   LogExceptionMessage( except );
+  LogStackBacktrace();
   log_stream_ << std::endl;
 }
 
@@ -216,6 +217,7 @@ void Logger::LogWarning( const T& except )
   LogTime();
   LogExceptionType( except );
   LogExceptionValue( except );
+  LogStackBacktrace();
   log_stream_ << std::endl;
 }
 
@@ -227,6 +229,7 @@ void Logger::LogError( const std::exception& except )
   LogTime();
   LogExceptionType( except );
   LogExceptionMessage( except );
+  LogStackBacktrace();
   log_stream_ << std::endl;
 }
 
@@ -239,6 +242,7 @@ void Logger::LogError( const T& except )
   LogTime();
   LogExceptionType( except );
   LogExceptionValue( except );
+  LogStackBacktrace();
   log_stream_ << std::endl;
 }
 
