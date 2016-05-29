@@ -404,13 +404,15 @@ std::vector<std::string> Logger::GetStackBacktrace()
 
   char** function_names =
     backtrace_symbols(address_buffer, address_count);
-  if(function_names == nullptr) {
+  if(function_names == nullptr)
+  {
     throw std::runtime_error("Error: GetStackBacktrace() failed to retrieve "\
       "a set of function names.\n");
   }
 
   std::vector<std::string> stack_backtrace;
-  for(size_t i = 0; i < address_count; ++i) {
+  for(size_t i = 0; i < address_count; ++i)
+  {
     stack_backtrace.push_back(function_names[i]);
   }
 
