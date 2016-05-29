@@ -118,9 +118,13 @@ class Logger
     // This private method logs the message of an exception from std.
     void LogExceptionMessage( const std::exception& except );
 
-    // This private method backtraces and logs the call stack.
+    // This private method logs a stack backtrace.
+    void LogStackBacktrace();
+
+    // This private method returns backtraces of the current call stack.
     // An exception is thrown if:
-    //   backtrace_symbols returns an invalid set of function names (runtime_error)
+    //   backtrace_symbols returns an invalid set of
+    //   function names (runtime_error)
     std::vector<std::string> GetStackBacktrace();
 };
 
@@ -359,9 +363,17 @@ void Logger::LogExceptionMessage( const std::exception& except )
   }
 }
 
-// This private method backtraces and logs the call stack.
+// This private method logs a stack backtrace.
+void Logger::LogStackBacktrace()
+{
+  throw std::logic_error("Error: LogStackBacktrace() has not yet been "\
+    "implemented.\n");
+}
+
+// This private method returns backtraces of the current call stack.
 // An exception is thrown if:
-//   backtrace_symbols returns an invalid set of function names (runtime_error)
+//   backtrace_symbols returns an invalid set of
+//   function names (runtime_error)
 std::vector<std::string> Logger::GetStackBacktrace()
 {
   void* address_buffer[kStackBacktraceLevel];
