@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <execinfo.h>
+
 #include <ctime>
 #include <exception>
 #include <fstream>
@@ -362,8 +364,23 @@ void Logger::LogExceptionMessage( const std::exception& except )
 //   backtrace_symbols returns an invalid set of function names (runtime_error)
 std::vector<std::string> Logger::GetStackBacktrace()
 {
-  throw std::logic_error("Error: GetStackBacktrace() has not yet "\
-    "been implemented!\n");
+  void* address_buffer[kStackBacktraceLevel];
+  unsigned int address_count = backtrace(address_buffer, kStackBacktraceLevel);
+
+  char** function_names =
+    backtrace_symbols(address_buffer, address_count);
+  if(function_names == nullptr) {
+    throw std::runtime_error("Error: GetStackBacktrace() failed to retrieve "\
+      "a set of function names.\n");
+  }
+
+  std::vector<std::string> stack_backtrace;
+  for(size_t i = 0; i < address_count; ++i) {
+    stack_backtrace.push_back(function_names[i]);
+  }
+
+  free(function_names);
+  return stack_backtrace;
 }
 
 }  // End of unnamed namespace (local to the file)
