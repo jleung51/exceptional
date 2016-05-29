@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <execinfo.h>
+
 #include <ctime>
 #include <exception>
 #include <fstream>
@@ -18,6 +20,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <vector>
 
 // For type demangling when using g++
 #ifdef __GNUG__
@@ -84,6 +87,8 @@ class Logger
     size_t warning_count_ = 0;
     size_t error_count_ = 0;
 
+    static constexpr size_t kStackBacktraceLevel = 10;
+
     enum class SeverityLevel
     {
       kWarning,
@@ -112,6 +117,15 @@ class Logger
 
     // This private method logs the message of an exception from std.
     void LogExceptionMessage( const std::exception& except );
+
+    // This private method logs a stack backtrace.
+    void LogStackBacktrace();
+
+    // This private method returns backtraces of the current call stack.
+    // An exception is thrown if:
+    //   backtrace_symbols returns an invalid set of
+    //   function names (runtime_error)
+    std::vector<std::string> GetStackBacktrace();
 };
 
 // Default constructor
@@ -190,6 +204,7 @@ void Logger::LogWarning( const std::exception& except )
   LogTime();
   LogExceptionType( except );
   LogExceptionMessage( except );
+  LogStackBacktrace();
   log_stream_ << std::endl;
 }
 
@@ -202,6 +217,7 @@ void Logger::LogWarning( const T& except )
   LogTime();
   LogExceptionType( except );
   LogExceptionValue( except );
+  LogStackBacktrace();
   log_stream_ << std::endl;
 }
 
@@ -213,6 +229,7 @@ void Logger::LogError( const std::exception& except )
   LogTime();
   LogExceptionType( except );
   LogExceptionMessage( except );
+  LogStackBacktrace();
   log_stream_ << std::endl;
 }
 
@@ -225,6 +242,7 @@ void Logger::LogError( const T& except )
   LogTime();
   LogExceptionType( except );
   LogExceptionValue( except );
+  LogStackBacktrace();
   log_stream_ << std::endl;
 }
 
@@ -347,6 +365,57 @@ void Logger::LogExceptionMessage( const std::exception& except )
     log_stream_
       << std::endl;
   }
+}
+
+// This private method logs a stack backtrace.
+void Logger::LogStackBacktrace()
+{
+  std::vector<std::string> stack_backtrace;
+  try
+  {
+    stack_backtrace = GetStackBacktrace();
+  }
+  catch (...)
+  {
+    return;
+  }
+
+  log_stream_
+    << "Stack backtrace:"
+    << std::endl;
+
+  for( auto i : stack_backtrace )
+  {
+    log_stream_
+      << "  "
+      << i
+      << std::endl;
+  }
+}
+
+// This private method returns backtraces of the current call stack.
+// An exception is thrown if:
+//   backtrace_symbols returns an invalid set of
+//   function names (runtime_error)
+std::vector<std::string> Logger::GetStackBacktrace()
+{
+  void* address_buffer[kStackBacktraceLevel];
+  unsigned int address_count = backtrace(address_buffer, kStackBacktraceLevel);
+
+  char** function_names =
+    backtrace_symbols(address_buffer, address_count);
+  if(function_names == nullptr) {
+    throw std::runtime_error("Error: GetStackBacktrace() failed to retrieve "\
+      "a set of function names.\n");
+  }
+
+  std::vector<std::string> stack_backtrace;
+  for(size_t i = 0; i < address_count; ++i) {
+    stack_backtrace.push_back(function_names[i]);
+  }
+
+  free(function_names);
+  return stack_backtrace;
 }
 
 }  // End of unnamed namespace (local to the file)
