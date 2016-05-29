@@ -366,8 +366,27 @@ void Logger::LogExceptionMessage( const std::exception& except )
 // This private method logs a stack backtrace.
 void Logger::LogStackBacktrace()
 {
-  throw std::logic_error("Error: LogStackBacktrace() has not yet been "\
-    "implemented.\n");
+  std::vector<std::string> stack_backtrace;
+  try
+  {
+    stack_backtrace = GetStackBacktrace();
+  }
+  catch (...)
+  {
+    return;
+  }
+
+  log_stream_
+    << "Stack backtrace:"
+    << std::endl;
+
+  for( auto i : stack_backtrace )
+  {
+    log_stream_
+      << "  "
+      << i
+      << std::endl;
+  }
 }
 
 // This private method returns backtraces of the current call stack.
