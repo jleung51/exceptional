@@ -24,6 +24,7 @@ C++ lightweight exception logger.
 ## Instructions for Use
 
 1. #include _exceptional.hpp_ into the files which require logging
-2. Edit the exception logger class(es) declared at the end of _exceptional.hpp_ to your preferred usage
-3. Call exceptional::*logger\_name*.LogWarning(value) or exceptional::*logger\_name*.LogError(value) with a thrown exception value  
+2. Add the `-rdynamic` flag when linking your object files (for better stacktrace information)
+3. Edit the exception logger class(es) declared at the end of _exceptional.hpp_ to your preferred usage
+4. Call exceptional::*logger\_name*.LogWarning(value) or exceptional::*logger\_name*.LogError(value) with a thrown exception value  
 (from any file with _exceptional.hpp_ included)
