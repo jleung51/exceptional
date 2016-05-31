@@ -6,10 +6,10 @@ HEADERS = \
 GCC = g++ -std=c++14
 
 # g++ compiling flags
-GCC-CFLAGS = -c -Wall -Wextra -Wmissing-declarations -Werror
+GCC-CFLAGS = -c -g -Wall -Wextra -Wmissing-declarations -Werror -rdynamic
 
 # g++ linking flags
-GCC-LFLAGS = -Wall -Wextra -Wmissing-declarations -Werror
+GCC-LFLAGS = -g -Wall -Wextra -Wmissing-declarations -Werror -rdynamic
 
 # Clang compilation options
 CLANG = clang++-3.5 -std=c++14 -Werror -fshow-source-location -fshow-column -fcaret-diagnostics -fcolor-diagnostics -fdiagnostics-show-option
