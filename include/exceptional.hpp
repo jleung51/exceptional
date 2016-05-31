@@ -20,6 +20,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <tuple>
 #include <typeinfo>
 #include <vector>
 
@@ -133,6 +134,19 @@ class Logger
     //   type_name is null (invalid_argument)
     std::vector<std::string>
     DemangleStackBacktrace( std::vector<std::string> stack_backtrace );
+
+    // This private method separates a single stack backtrace entry into
+    // the function, offset, and remainder.
+    //
+    // I.e.:
+    //   Mangled:         ./module(function+0x15c) [0x8048a6d]
+    //   Interpretation:  ./executable(function+offset)
+    //
+    // An exception is thrown if:
+    //   The entry cannot be separated (invalid_argument)
+    std::tuple<std::string, std::string, std::string>
+    SeparateBacktraceEntry( std::string entry );
+
 };
 
 // Default constructor
@@ -530,6 +544,69 @@ Logger::DemangleStackBacktrace( std::vector<std::string> stack_backtrace )
 }
 
 #endif
+
+// This private method separates a single stack backtrace entry into
+// the function, offset, and remainder.
+//
+// I.e.:
+//   Mangled:         ./module(function+0x15c) [0x8048a6d]
+//   Interpretation:  ./executable(function+offset)
+//
+// An exception is thrown if:
+//   The entry cannot be separated (invalid_argument)
+std::tuple<std::string, std::string, std::string>
+Logger::SeparateBacktraceEntry( std::string entry )
+{
+  std::string executable;
+  std::string function;
+  std::string offset;
+
+  size_t executable_begin = 2;
+  size_t func_begin = 0;
+  size_t offset_begin = 0;
+
+  size_t len = entry.length();
+
+  for( size_t i = 0; i < len; ++i )
+  {
+    if( entry.at(i) == '(' )
+    {
+      func_begin = i + 1;
+      size_t chars_to_copy = i - executable_begin;
+      executable = std::string(entry, executable_begin, chars_to_copy);
+      break;
+    }
+  }
+
+  for( size_t i = func_begin; i < len; ++i )
+  {
+    if( entry.at(i) == '+' )
+    {
+      offset_begin = i + 1;
+      size_t chars_to_copy = i - func_begin;
+      function = std::string(entry, func_begin, chars_to_copy);
+      break;
+    }
+  }
+
+  for( size_t i = offset_begin; i < len; ++i )
+  {
+    if( entry.at(i) == ')' )
+    {
+      size_t chars_to_copy = i - offset_begin;
+      offset = std::string(entry, offset_begin, chars_to_copy);
+      break;
+    }
+  }
+
+  if( executable.empty() || function.empty() || offset.empty() )
+  {
+    throw std::invalid_argument("Error: SeparateBacktraceEntry() was "\
+      "unable to parse the given entry.\n");
+  }
+
+  return make_tuple(executable, function, offset);
+}
 
 }  // End of unnamed namespace (local to the file)
 
