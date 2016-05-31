@@ -13,6 +13,7 @@
 
 #include <execinfo.h>
 
+#include <cstring>
 #include <ctime>
 #include <exception>
 #include <fstream>
@@ -126,6 +127,12 @@ class Logger
     //   backtrace_symbols returns an invalid set of
     //   function names (runtime_error)
     std::vector<std::string> GetStackBacktrace();
+
+    // This private method demangles a stack backtrace if g++ is used.
+    // An exception is thrown if:
+    //   type_name is null (invalid_argument)
+    std::vector<std::string>
+    DemangleStackBacktrace( std::vector<std::string> stack_backtrace );
 };
 
 // Default constructor
@@ -419,6 +426,110 @@ std::vector<std::string> Logger::GetStackBacktrace()
   free(function_names);
   return stack_backtrace;
 }
+
+
+#ifdef __GNUG__  // Using g++
+
+// This private method demangles a stack backtrace if g++ is used.
+// An exception is thrown if:
+//   type_name is null (invalid_argument)
+std::vector<std::string>
+Logger::DemangleStackBacktrace( std::vector<std::string> stack_backtrace )
+{
+  std::vector<std::string> stack_backtrace_demangled;
+
+  for( auto i : stack_backtrace )
+  {
+    const char* func_const = i.c_str();
+    char* func = strdup(func_const);
+
+    // Search for function and offset, separated by ( + )
+    // Mangled:         ./module(function+0x15c) [0x8048a6d]
+    // Interpretation:  ./executable(function+offset)
+    // Demangled:       executable : demangled_function_name + offset
+    bool func_begin_found = false;
+    bool offset_begin_found = false;
+
+    size_t module_begin = 2;
+    size_t func_begin = 0;
+    size_t offset_begin = 0;
+
+    size_t func_len = strlen(func);
+
+    for( size_t j = 0; j < func_len; ++j )
+    {
+      if( func[j] == '(' )
+      {
+        func[j] = '\0';
+        func_begin = j + 1;
+        func_begin_found = true;
+        break;
+      }
+    }
+
+    for( size_t j = func_begin; j < func_len; ++j )
+    {
+      if( func[j] == '+' )
+      {
+        func[j] = '\0';
+        offset_begin = j + 1;
+        offset_begin_found = true;
+        break;
+      }
+    }
+
+    for( size_t j = offset_begin; j < func_len; ++j )
+    {
+      if( func[j] == ')' )
+      {
+        func[j] = '\0';
+        break;
+      }
+    }
+
+    if( !func_begin_found || !offset_begin_found )
+    {
+      stack_backtrace_demangled.push_back(i);
+      continue;
+    }
+
+    int status = -1;
+    char* func_demangled =
+      abi::__cxa_demangle( func + func_begin, NULL, NULL, &status );
+
+    if( status == 0 )
+    {
+      std::string demangled_string( func_demangled );
+      free( func_demangled );
+
+      std::string full_string
+      (
+        std::string(func + module_begin) +
+        " : " +
+        demangled_string +
+        " + " +
+        std::string(func + offset_begin)
+      );
+      stack_backtrace_demangled.push_back( full_string );
+    }
+    else
+    {
+      stack_backtrace_demangled.push_back( i );
+    }
+  }
+  return stack_backtrace_demangled;
+}
+
+#else
+
+// This private method demangles a stack backtrace if g++ is used.
+std::vector<std::string>
+Logger::DemangleStackBacktrace( std::vector<std::string> stack_backtrace )
+{
+  return stack_backtrace;
+}
+
+#endif
 
 }  // End of unnamed namespace (local to the file)
 
