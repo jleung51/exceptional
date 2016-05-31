@@ -452,64 +452,31 @@ Logger::DemangleStackBacktrace( std::vector<std::string> stack_backtrace )
 {
   std::vector<std::string> stack_backtrace_demangled;
 
+  // Forms of a stack backtrace entry
+  //   Mangled (original): ./module(function+0x15c) [0x8048a6d]
+  //   Interpretation:     ./executable(function+offset)
+  //   Separated:          executable function offset
+  //   Demangled:          executable : demangled_function_name + offset
   for( auto i : stack_backtrace )
   {
-    const char* func_const = i.c_str();
-    char* func = strdup(func_const);
-
-    // Search for function and offset, separated by ( + )
-    // Mangled:         ./module(function+0x15c) [0x8048a6d]
-    // Interpretation:  ./executable(function+offset)
-    // Demangled:       executable : demangled_function_name + offset
-    bool func_begin_found = false;
-    bool offset_begin_found = false;
-
-    size_t module_begin = 2;
-    size_t func_begin = 0;
-    size_t offset_begin = 0;
-
-    size_t func_len = strlen(func);
-
-    for( size_t j = 0; j < func_len; ++j )
+    std::tuple<std::string, std::string, std::string> entry;
+    try
     {
-      if( func[j] == '(' )
-      {
-        func[j] = '\0';
-        func_begin = j + 1;
-        func_begin_found = true;
-        break;
-      }
+      entry = SeparateBacktraceEntry( i );
     }
-
-    for( size_t j = func_begin; j < func_len; ++j )
+    catch( ... )
     {
-      if( func[j] == '+' )
-      {
-        func[j] = '\0';
-        offset_begin = j + 1;
-        offset_begin_found = true;
-        break;
-      }
-    }
-
-    for( size_t j = offset_begin; j < func_len; ++j )
-    {
-      if( func[j] == ')' )
-      {
-        func[j] = '\0';
-        break;
-      }
-    }
-
-    if( !func_begin_found || !offset_begin_found )
-    {
-      stack_backtrace_demangled.push_back(i);
+      stack_backtrace_demangled.push_back( i );
       continue;
     }
 
+    std::string executable = std::get<0>(entry);
+    std::string function = std::get<1>(entry);
+    std::string offset = std::get<2>(entry);
+
     int status = -1;
     char* func_demangled =
-      abi::__cxa_demangle( func + func_begin, NULL, NULL, &status );
+      abi::__cxa_demangle( function.c_str(), NULL, NULL, &status );
 
     if( status == 0 )
     {
@@ -518,11 +485,11 @@ Logger::DemangleStackBacktrace( std::vector<std::string> stack_backtrace )
 
       std::string full_string
       (
-        std::string(func + module_begin) +
+        executable +
         " : " +
         demangled_string +
         " + " +
-        std::string(func + offset_begin)
+        offset
       );
       stack_backtrace_demangled.push_back( full_string );
     }
@@ -531,6 +498,7 @@ Logger::DemangleStackBacktrace( std::vector<std::string> stack_backtrace )
       stack_backtrace_demangled.push_back( i );
     }
   }
+
   return stack_backtrace_demangled;
 }
 
