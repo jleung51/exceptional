@@ -26,6 +26,20 @@
 #include <cxxabi.h>
 #endif
 
+// Public logging functions
+namespace exceptional
+{
+
+  // This function logs a warning to Exceptional.
+  template <class T>
+  void LogWarning( T& except );
+
+  // This function logs an error to Exceptional.
+  template <class T>
+  void LogError( T& except );
+
+}
+
 namespace  // Unnamed namespace for local functions/classes
 {
 
@@ -573,12 +587,28 @@ Logger::SeparateBacktraceEntry( std::string entry )
   return make_tuple(executable, function, offset);
 }
 
+Logger logger_default_file;
+// Logger logger_example_file("example_file.log");
+// Logger logger_cout(std::cout);
+
 }  // End of unnamed namespace (local to the file)
 
-// Place loggers in here
+// Implementations of public functions
 namespace exceptional
 {
-  Logger logger_default_file;
-  Logger logger_example_file("example_file.log");
-  Logger logger_cout(std::cout);
+
+// This function logs a warning to Exceptional.
+template <class T>
+void LogWarning( T& except )
+{
+  logger_default_file.LogWarning( except );
 }
+
+// This function logs an error to Exceptional.
+template <class T>
+void LogError( T& except )
+{
+  logger_default_file.LogError( except );
+}
+
+}  // End of namespace exceptional
