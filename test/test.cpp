@@ -68,7 +68,7 @@ void func2(char c)
 int func3(std::string s)
 {
   if(s[0]){}
-  exceptional::logger_cout.LogError("Logging error from nested function call");
+  exceptional::LogError("Logging error from nested function call");
   return 0;
 }
 
@@ -79,12 +79,12 @@ int main()
   std::cout << "Testing output to captains.log:" << std::endl;
   {
     int i = 948;
-    exceptional::logger_default_file.LogWarning(i);
-    exceptional::logger_default_file.LogError(i);
+    exceptional::LogWarning(i);
+    exceptional::LogError(i);
 
     std::string s = "Example string here.";
-    exceptional::logger_default_file.LogWarning(s);
-    exceptional::logger_default_file.LogError(i);
+    exceptional::LogWarning(s);
+    exceptional::LogError(i);
 
     try
     {
@@ -92,7 +92,7 @@ int main()
     }
     catch( const std::exception& e )
     {
-      exceptional::logger_default_file.LogWarning(e);
+      exceptional::LogWarning(e);
     }
 
     try
@@ -101,7 +101,7 @@ int main()
     }
     catch( const std::exception& e )
     {
-      exceptional::logger_default_file.LogError(e);
+      exceptional::LogError(e);
     }
 
     try
@@ -110,7 +110,7 @@ int main()
     }
     catch( const std::exception& e )
     {
-      exceptional::logger_default_file.LogWarning(e);
+      exceptional::LogWarning(e);
     }
 
     try
@@ -119,26 +119,27 @@ int main()
     }
     catch( const std::exception& e )
     {
-      exceptional::logger_default_file.LogError(e);
+      exceptional::LogError(e);
     }
   }
-  std::cout << "Completed." << std::endl << std::endl;
+  std::cout << "Completed." << std::endl;
+
+  // std::cout << std::endl;
+  // std::cout << "Testing output to example_file.log:" << std::endl;
+  // exceptional::logger_example_file.LogWarning(948);
+  // std::cout << "Completed." << std::endl << std::endl;
+  //
+  // std::cout << std::endl;
+  // std::cout << "Testing output to cout:" << std::endl;
+  // exceptional::logger_cout.LogWarning(948);
+  // std::cout << "Completed." << std::endl << std::endl;
 
   std::cout << std::endl;
-  std::cout << "Testing output to example_file.log:" << std::endl;
-  exceptional::logger_example_file.LogWarning(948);
-  std::cout << "Completed." << std::endl << std::endl;
-
-  std::cout << std::endl;
-  std::cout << "Testing output to cout:" << std::endl;
-  exceptional::logger_cout.LogWarning(948);
-  std::cout << "Completed." << std::endl << std::endl;
-
-  std::cout << std::endl;
-  std::cout << "Testing a stack backtrace from within nested function calls "
-    << "to cout:" << std::endl;
+  std::cout << "Testing a stack backtrace from within nested function calls:"
+    << std::endl;
   Private::func1(5);
-  std::cout << "Completed." << std::endl << std::endl;
+  std::cout << "Completed." << std::endl;
 
+  std::cout << std::endl;
   return 0;
 }
