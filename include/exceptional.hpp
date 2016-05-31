@@ -1,8 +1,5 @@
 /*
  *
- * Author: Jeffrey Leung
- * Last edited: 2016-03-24
- *
  * This C++ header file contains the definition of the exception logger
  * class Exceptional and its methods, as well as functions which can be
  * used to log exceptions with.

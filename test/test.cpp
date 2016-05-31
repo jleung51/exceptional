@@ -1,8 +1,5 @@
 /*
  *
- * Author: Jeffrey Leung
- * Last edited: 2016-03-21
- *
  * This C++ file tests the functions of the exception logger Exceptional.
  *
  */
