@@ -13,8 +13,16 @@
 
 #include "../include/exceptional.hpp"
 
-namespace
+// These functions, if placed into the unnamed namespace, do not appear
+// in the stack backtrace.
+namespace Private
 {
+
+// This function throws an std::out_of_range error without a newline.
+void out_of_range_no_newline();
+
+// This function throws an std::out_of_range error with a newline at the end.
+void out_of_range_newline();
 
 // This function throws an std::out_of_range error with a newline at the end.
 void out_of_range_newline()
@@ -28,7 +36,7 @@ void out_of_range_no_newline()
   throw std::out_of_range("Exception message for std::out_of_range.");
 }
 
-}  // End of unnamed namespace (for local functions)
+}  // End of namespace Private
 
 int main()
 {
@@ -44,7 +52,7 @@ int main()
 
     try
     {
-      out_of_range_newline();
+      Private::out_of_range_newline();
     }
     catch( const std::exception& e )
     {
@@ -53,7 +61,7 @@ int main()
 
     try
     {
-      out_of_range_newline();
+      Private::out_of_range_newline();
     }
     catch( const std::exception& e )
     {
@@ -62,7 +70,7 @@ int main()
 
     try
     {
-      out_of_range_no_newline();
+      Private::out_of_range_no_newline();
     }
     catch( const std::exception& e )
     {
@@ -71,7 +79,7 @@ int main()
 
     try
     {
-      out_of_range_no_newline();
+      Private::out_of_range_no_newline();
     }
     catch( const std::exception& e )
     {
