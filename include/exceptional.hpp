@@ -394,7 +394,7 @@ void Logger::LogStackBacktrace()
   std::vector<std::string> stack_backtrace;
   try
   {
-    stack_backtrace = GetStackBacktrace();
+    stack_backtrace = DemangleStackBacktrace(GetStackBacktrace());
   }
   catch (...)
   {
