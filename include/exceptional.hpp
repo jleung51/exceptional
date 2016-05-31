@@ -13,12 +13,14 @@
 
 #include <execinfo.h>
 
+#include <cstring>
 #include <ctime>
 #include <exception>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <tuple>
 #include <typeinfo>
 #include <vector>
 
@@ -126,6 +128,25 @@ class Logger
     //   backtrace_symbols returns an invalid set of
     //   function names (runtime_error)
     std::vector<std::string> GetStackBacktrace();
+
+    // This private method demangles a stack backtrace if g++ is used.
+    // An exception is thrown if:
+    //   type_name is null (invalid_argument)
+    std::vector<std::string>
+    DemangleStackBacktrace( std::vector<std::string> stack_backtrace );
+
+    // This private method separates a single stack backtrace entry into
+    // the function, offset, and remainder.
+    //
+    // I.e.:
+    //   Mangled:         ./module(function+0x15c) [0x8048a6d]
+    //   Interpretation:  ./executable(function+offset)
+    //
+    // An exception is thrown if:
+    //   The entry cannot be separated (invalid_argument)
+    std::tuple<std::string, std::string, std::string>
+    SeparateBacktraceEntry( std::string entry );
+
 };
 
 // Default constructor
@@ -373,7 +394,7 @@ void Logger::LogStackBacktrace()
   std::vector<std::string> stack_backtrace;
   try
   {
-    stack_backtrace = GetStackBacktrace();
+    stack_backtrace = DemangleStackBacktrace(GetStackBacktrace());
   }
   catch (...)
   {
@@ -404,18 +425,155 @@ std::vector<std::string> Logger::GetStackBacktrace()
 
   char** function_names =
     backtrace_symbols(address_buffer, address_count);
-  if(function_names == nullptr) {
+  if(function_names == nullptr)
+  {
     throw std::runtime_error("Error: GetStackBacktrace() failed to retrieve "\
       "a set of function names.\n");
   }
 
   std::vector<std::string> stack_backtrace;
-  for(size_t i = 0; i < address_count; ++i) {
+  for(size_t i = 0; i < address_count; ++i)
+  {
     stack_backtrace.push_back(function_names[i]);
   }
 
   free(function_names);
   return stack_backtrace;
+}
+
+
+#ifdef __GNUG__  // Using g++
+
+// This private method demangles a stack backtrace if g++ is used.
+// An exception is thrown if:
+//   type_name is null (invalid_argument)
+std::vector<std::string>
+Logger::DemangleStackBacktrace( std::vector<std::string> stack_backtrace )
+{
+  std::vector<std::string> stack_backtrace_demangled;
+
+  // Forms of a stack backtrace entry
+  //   Mangled (original): ./module(function+0x15c) [0x8048a6d]
+  //   Interpretation:     ./executable(function+offset)
+  //   Separated:          executable function offset
+  //   Demangled:          executable : demangled_function_name + offset
+  for( auto i : stack_backtrace )
+  {
+    std::tuple<std::string, std::string, std::string> entry;
+    try
+    {
+      entry = SeparateBacktraceEntry( i );
+    }
+    catch( ... )
+    {
+      stack_backtrace_demangled.push_back( i );
+      continue;
+    }
+
+    std::string executable = std::get<0>(entry);
+    std::string function = std::get<1>(entry);
+    std::string offset = std::get<2>(entry);
+
+    int status = -1;
+    char* func_demangled =
+      abi::__cxa_demangle( function.c_str(), NULL, NULL, &status );
+
+    if( status == 0 )
+    {
+      std::string demangled_string( func_demangled );
+      free( func_demangled );
+
+      std::string full_string
+      (
+        executable +
+        " : " +
+        demangled_string +
+        " + " +
+        offset
+      );
+      stack_backtrace_demangled.push_back( full_string );
+    }
+    else
+    {
+      stack_backtrace_demangled.push_back( i );
+    }
+  }
+
+  return stack_backtrace_demangled;
+}
+
+#else
+
+// This private method demangles a stack backtrace if g++ is used.
+std::vector<std::string>
+Logger::DemangleStackBacktrace( std::vector<std::string> stack_backtrace )
+{
+  return stack_backtrace;
+}
+
+#endif
+
+// This private method separates a single stack backtrace entry into
+// the function, offset, and remainder.
+//
+// I.e.:
+//   Mangled:         ./module(function+0x15c) [0x8048a6d]
+//   Interpretation:  ./executable(function+offset)
+//
+// An exception is thrown if:
+//   The entry cannot be separated (invalid_argument)
+std::tuple<std::string, std::string, std::string>
+Logger::SeparateBacktraceEntry( std::string entry )
+{
+  std::string executable;
+  std::string function;
+  std::string offset;
+
+  size_t executable_begin = 2;
+  size_t func_begin = 0;
+  size_t offset_begin = 0;
+
+  size_t len = entry.length();
+
+  for( size_t i = 0; i < len; ++i )
+  {
+    if( entry.at(i) == '(' )
+    {
+      func_begin = i + 1;
+      size_t chars_to_copy = i - executable_begin;
+      executable = std::string(entry, executable_begin, chars_to_copy);
+      break;
+    }
+  }
+
+  for( size_t i = func_begin; i < len; ++i )
+  {
+    if( entry.at(i) == '+' )
+    {
+      offset_begin = i + 1;
+      size_t chars_to_copy = i - func_begin;
+      function = std::string(entry, func_begin, chars_to_copy);
+      break;
+    }
+  }
+
+  for( size_t i = offset_begin; i < len; ++i )
+  {
+    if( entry.at(i) == ')' )
+    {
+      size_t chars_to_copy = i - offset_begin;
+      offset = std::string(entry, offset_begin, chars_to_copy);
+      break;
+    }
+  }
+
+  if( executable.empty() || function.empty() || offset.empty() )
+  {
+    throw std::invalid_argument("Error: SeparateBacktraceEntry() was "\
+      "unable to parse the given entry.\n");
+  }
+
+  return make_tuple(executable, function, offset);
 }
 
 }  // End of unnamed namespace (local to the file)

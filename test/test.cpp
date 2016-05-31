@@ -13,8 +13,32 @@
 
 #include "../include/exceptional.hpp"
 
-namespace
+// These functions, if placed into the unnamed namespace, do not appear
+// in the stack backtrace.
+namespace Private
 {
+
+// This function throws an std::out_of_range error without a newline.
+void out_of_range_no_newline();
+
+// This function throws an std::out_of_range error with a newline at the end.
+void out_of_range_newline();
+
+// This function throws an std::out_of_range error with a newline at the end.
+void out_of_range_newline();
+
+// This function throws an std::out_of_range error without a newline.
+void out_of_range_no_newline();
+
+// This local function calls func2(), and is for testing the stack backtrace.
+void func1(int i);
+
+// This local function calls func3(), and is for testing the stack backtrace.
+void func2(char c);
+
+// This local function logs an std::string error to std::cout, and is
+// for testing the stack backtrace.
+int func3(std::string s);
 
 // This function throws an std::out_of_range error with a newline at the end.
 void out_of_range_newline()
@@ -28,7 +52,30 @@ void out_of_range_no_newline()
   throw std::out_of_range("Exception message for std::out_of_range.");
 }
 
-}  // End of unnamed namespace (for local functions)
+// This local function calls func2(), and is for testing the stack backtrace.
+void func1(int i)
+{
+  if(i){}
+  func2('a');
+}
+
+// This local function calls func3(), and is for testing the stack backtrace.
+void func2(char c)
+{
+  if(c){}
+  func3("word");
+}
+
+// This local function logs an std::string error to std::cout, and is
+// for testing the stack backtrace.
+int func3(std::string s)
+{
+  if(s[0]){}
+  exceptional::logger_cout.LogError("Logging error from nested function call");
+  return 0;
+}
+
+}  // End of namespace Private
 
 int main()
 {
@@ -44,7 +91,7 @@ int main()
 
     try
     {
-      out_of_range_newline();
+      Private::out_of_range_newline();
     }
     catch( const std::exception& e )
     {
@@ -53,7 +100,7 @@ int main()
 
     try
     {
-      out_of_range_newline();
+      Private::out_of_range_newline();
     }
     catch( const std::exception& e )
     {
@@ -62,7 +109,7 @@ int main()
 
     try
     {
-      out_of_range_no_newline();
+      Private::out_of_range_no_newline();
     }
     catch( const std::exception& e )
     {
@@ -71,7 +118,7 @@ int main()
 
     try
     {
-      out_of_range_no_newline();
+      Private::out_of_range_no_newline();
     }
     catch( const std::exception& e )
     {
@@ -88,6 +135,12 @@ int main()
   std::cout << std::endl;
   std::cout << "Testing output to cout:" << std::endl;
   exceptional::logger_cout.LogWarning(948);
+  std::cout << "Completed." << std::endl << std::endl;
+
+  std::cout << std::endl;
+  std::cout << "Testing a stack backtrace from within nested function calls "
+    << "to cout:" << std::endl;
+  Private::func1(5);
   std::cout << "Completed." << std::endl << std::endl;
 
   return 0;
