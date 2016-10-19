@@ -2,6 +2,8 @@
 
 C++ lightweight exception logger.
 
+Currently in development.
+
 ## Example Output
 
     ________________________________________
